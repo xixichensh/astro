@@ -13,6 +13,5 @@ import { defineConfig } from 'astro/config';
 
 // https://astro.build/config
 export default defineConfig({
-  site: 'https://xixichensh.github.io',
-  base: '/astro',
+  site: 'https://www.cfxixi.com',
 });
