@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-label="滴闯关">
+	<rect width="128" height="128" rx="28" fill="#111827" />
+	<path
+		d="M64 16c18 21 32 40 32 62 0 21-14 36-32 36S32 99 32 78c0-22 14-41 32-62Z"
+		fill="#0f766e"
+	/>
+	<path
+		d="M50 91c22-9 8-24 25-33 12-6 6-18 19-25"
+		fill="none"
+		stroke="#f6f3eb"
+		stroke-linecap="round"
+		stroke-linejoin="round"
+		stroke-width="8"
+	/>
+	<circle cx="50" cy="91" r="7" fill="#e76f51" />
+	<circle cx="75" cy="58" r="6" fill="#d99a25" />
+	<path d="M92 28v25" fill="none" stroke="#f6f3eb" stroke-linecap="round" stroke-width="5" />
+	<path d="M94 29h19l-5 8 5 8H94z" fill="#d99a25" />
+	<path d="M45 53c-1 10 3 17 13 21" fill="none" stroke="#8fe3d4" stroke-linecap="round" stroke-width="7" opacity=".72" />
+</svg>
