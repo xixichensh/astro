@@ -1,3 +1,13 @@
+<!--
+ * @Author: cfxixi
+ * @Date: 2026-06-22 18:08:03
+ * @LastEditors: cfxixi
+ * @LastEditTime: 2026-06-23 19:21:59
+ * @FilePath: /astro/README.md
+ * @Description: --
+ * 短号: 65030
+ * Copyright (c) 2026 by cfxixi/天天基金, All Rights Reserved.
+-->
 # Astro Starter Kit: Basics
 
 ```sh
@@ -44,3 +54,5 @@ All commands are run from the root of the project, from a terminal:
 ## 👀 Want to learn more?
 
 Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+
+1
