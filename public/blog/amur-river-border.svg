@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 640" role="img" aria-labelledby="title desc">
+	<title id="title">Amur river border landscape</title>
+	<desc id="desc">A calm river bends between two distant shores under a wide northern sky.</desc>
+	<defs>
+		<linearGradient id="sky" x1="0" x2="0" y1="0" y2="1">
+			<stop offset="0" stop-color="#d8eee9" />
+			<stop offset="0.55" stop-color="#f7efe2" />
+			<stop offset="1" stop-color="#fffaf0" />
+		</linearGradient>
+		<linearGradient id="river" x1="0" x2="1" y1="0" y2="1">
+			<stop offset="0" stop-color="#0f766e" />
+			<stop offset="0.5" stop-color="#3f8f98" />
+			<stop offset="1" stop-color="#b7d3c8" />
+		</linearGradient>
+	</defs>
+	<rect width="1200" height="640" fill="url(#sky)" />
+	<circle cx="964" cy="126" r="58" fill="#eab86c" opacity="0.86" />
+	<path d="M0 342 C160 284 278 306 392 272 C514 236 638 168 800 202 C956 236 1072 204 1200 162 L1200 640 L0 640 Z" fill="#bccab1" />
+	<path d="M0 392 C178 356 302 380 442 342 C614 294 752 260 930 284 C1042 300 1116 286 1200 260 L1200 640 L0 640 Z" fill="#e2d4b8" />
+	<path d="M0 468 C168 412 282 424 432 390 C618 348 760 330 918 356 C1056 379 1126 352 1200 326 L1200 640 L0 640 Z" fill="#8ba990" />
+	<path d="M-16 546 C164 470 320 504 492 462 C670 418 796 392 960 440 C1080 474 1152 440 1230 410 L1230 640 L-16 640 Z" fill="url(#river)" opacity="0.95" />
+	<path d="M90 522 C234 490 355 512 505 482 C685 447 804 430 972 466" fill="none" stroke="#ffffff" stroke-width="6" stroke-linecap="round" opacity="0.56" />
+	<path d="M760 372 L820 340 L884 370 L856 388 L792 390 Z" fill="#f7f0db" stroke="#274153" stroke-width="5" />
+	<path d="M820 340 L820 298" stroke="#274153" stroke-width="5" stroke-linecap="round" />
+	<path d="M820 304 L880 330 L820 352 Z" fill="#d96d4f" />
+	<path d="M132 372 C142 326 162 298 192 268 C226 306 244 334 250 382" fill="#496f62" />
+	<path d="M162 388 L204 388 L196 520 L172 520 Z" fill="#6b5641" />
+	<path d="M250 386 C266 330 290 294 326 254 C365 304 384 344 390 396" fill="#375f58" />
+	<path d="M286 408 L342 408 L332 548 L294 548 Z" fill="#705743" />
+</svg>

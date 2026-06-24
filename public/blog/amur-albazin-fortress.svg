@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 640" role="img" aria-labelledby="title desc">
+	<title id="title">Albazin fortress on the river bluff</title>
+	<desc id="desc">A wooden fortress stands on a high bluff above a cold river under a tense sky.</desc>
+	<defs>
+		<linearGradient id="sky" x1="0" x2="0" y1="0" y2="1">
+			<stop offset="0" stop-color="#cfdde2" />
+			<stop offset="1" stop-color="#f7ecd8" />
+		</linearGradient>
+		<linearGradient id="water" x1="0" x2="1" y1="0" y2="0">
+			<stop offset="0" stop-color="#315f68" />
+			<stop offset="1" stop-color="#7fb0a9" />
+		</linearGradient>
+	</defs>
+	<rect width="1200" height="640" fill="url(#sky)" />
+	<path d="M0 426 C150 376 310 394 450 360 C620 318 786 316 944 348 C1064 372 1140 352 1200 330 L1200 640 L0 640 Z" fill="#a88763" />
+	<path d="M0 512 C190 468 360 490 550 450 C760 406 958 420 1200 376 L1200 640 L0 640 Z" fill="url(#water)" />
+	<path d="M116 438 L1044 438 L966 314 L204 314 Z" fill="#7b5a3e" />
+	<path d="M246 314 L246 202 L338 202 L338 314" fill="#8b6848" stroke="#503a2a" stroke-width="8" />
+	<path d="M218 202 L292 146 L366 202 Z" fill="#5a4332" />
+	<path d="M802 314 L802 194 L900 194 L900 314" fill="#8b6848" stroke="#503a2a" stroke-width="8" />
+	<path d="M772 194 L850 136 L930 194 Z" fill="#5a4332" />
+	<rect x="340" y="240" width="462" height="74" fill="#8b6848" stroke="#503a2a" stroke-width="8" />
+	<g stroke="#503a2a" stroke-width="6">
+		<path d="M382 240 L382 314" />
+		<path d="M442 240 L442 314" />
+		<path d="M502 240 L502 314" />
+		<path d="M562 240 L562 314" />
+		<path d="M622 240 L622 314" />
+		<path d="M682 240 L682 314" />
+		<path d="M742 240 L742 314" />
+	</g>
+	<path d="M510 314 C528 268 610 268 628 314 Z" fill="#3d2e24" />
+	<g fill="#d96d4f" opacity="0.88">
+		<circle cx="186" cy="356" r="12" />
+		<circle cx="998" cy="350" r="10" />
+		<circle cx="922" cy="296" r="8" />
+	</g>
+	<path d="M92 524 C252 496 420 510 608 474 C776 442 958 444 1116 414" fill="none" stroke="#ffffff" stroke-width="6" stroke-linecap="round" opacity="0.55" />
+</svg>

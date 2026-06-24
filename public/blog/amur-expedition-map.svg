@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 640" role="img" aria-labelledby="title desc">
+	<title id="title">Expedition map of the Amur</title>
+	<desc id="desc">A stylized old map shows a winding river, routes, ships, and compass marks.</desc>
+	<defs>
+		<linearGradient id="paper" x1="0" x2="1" y1="0" y2="1">
+			<stop offset="0" stop-color="#fbf1d9" />
+			<stop offset="1" stop-color="#e6d0a7" />
+		</linearGradient>
+	</defs>
+	<rect width="1200" height="640" fill="#2d4050" />
+	<rect x="72" y="54" width="1056" height="532" rx="20" fill="url(#paper)" />
+	<path d="M150 416 C292 348 378 384 502 326 C628 266 708 226 836 262 C938 290 1016 250 1060 206" fill="none" stroke="#16736d" stroke-width="34" stroke-linecap="round" opacity="0.72" />
+	<path d="M160 414 C304 356 394 380 508 320 C640 252 704 238 828 260 C928 280 1008 252 1054 206" fill="none" stroke="#f7f0dc" stroke-width="5" stroke-linecap="round" opacity="0.9" />
+	<path d="M232 458 C312 432 386 418 462 380" fill="none" stroke="#9c5530" stroke-width="5" stroke-dasharray="10 13" stroke-linecap="round" />
+	<path d="M516 334 C628 310 696 292 780 306" fill="none" stroke="#9c5530" stroke-width="5" stroke-dasharray="10 13" stroke-linecap="round" />
+	<path d="M812 282 C882 256 944 232 1016 212" fill="none" stroke="#9c5530" stroke-width="5" stroke-dasharray="10 13" stroke-linecap="round" />
+	<g transform="translate(888 406)">
+		<circle cx="0" cy="0" r="70" fill="none" stroke="#455668" stroke-width="5" />
+		<path d="M0 -92 L18 -18 L92 0 L18 18 L0 92 L-18 18 L-92 0 L-18 -18 Z" fill="#d96d4f" opacity="0.88" />
+		<circle cx="0" cy="0" r="10" fill="#455668" />
+	</g>
+	<path d="M376 286 L452 256 L528 286 L500 306 L408 306 Z" fill="#314a5b" />
+	<rect x="410" y="234" width="72" height="28" rx="5" fill="#fff7e7" stroke="#314a5b" stroke-width="4" />
+	<path d="M666 226 L724 204 L790 228 L764 244 L694 244 Z" fill="#314a5b" />
+	<rect x="696" y="184" width="54" height="24" rx="4" fill="#fff7e7" stroke="#314a5b" stroke-width="4" />
+	<g fill="#6d7f6f" opacity="0.5">
+		<path d="M172 178 C232 138 304 142 362 176 C284 186 232 194 172 178 Z" />
+		<path d="M192 246 C264 214 342 222 402 256 C326 262 258 268 192 246 Z" />
+		<path d="M726 138 C794 100 870 108 932 148 C858 152 798 160 726 138 Z" />
+	</g>
+</svg>

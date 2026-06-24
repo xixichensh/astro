@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 640" role="img" aria-labelledby="title desc">
+	<title id="title">Imagined granary beside the Amur</title>
+	<desc id="desc">Golden fields, river barges, and distant mountains suggest the dream of a new granary.</desc>
+	<defs>
+		<linearGradient id="bg" x1="0" x2="0" y1="0" y2="1">
+			<stop offset="0" stop-color="#e6f1ed" />
+			<stop offset="1" stop-color="#fbf3df" />
+		</linearGradient>
+		<linearGradient id="field" x1="0" x2="1" y1="0" y2="0">
+			<stop offset="0" stop-color="#d99a25" />
+			<stop offset="0.5" stop-color="#f0c66b" />
+			<stop offset="1" stop-color="#c17a2d" />
+		</linearGradient>
+	</defs>
+	<rect width="1200" height="640" fill="url(#bg)" />
+	<path d="M0 268 C140 210 256 214 386 244 C536 278 644 200 802 186 C958 172 1082 210 1200 164 L1200 640 L0 640 Z" fill="#9ab09b" />
+	<path d="M0 384 C168 334 322 346 482 308 C632 274 756 288 916 326 C1038 356 1126 334 1200 310 L1200 640 L0 640 Z" fill="#f5df99" />
+	<path d="M0 486 C210 410 410 420 590 382 C770 344 960 380 1200 342 L1200 640 L0 640 Z" fill="url(#field)" />
+	<g stroke="#7a4d1e" stroke-width="4" stroke-linecap="round" opacity="0.45">
+		<path d="M80 548 C210 504 334 486 460 456" />
+		<path d="M220 610 C360 540 520 492 710 442" />
+		<path d="M620 626 C740 554 884 492 1120 434" />
+	</g>
+	<path d="M148 336 C292 310 440 326 606 294 C752 266 880 252 1044 282" fill="none" stroke="#317e83" stroke-width="42" stroke-linecap="round" opacity="0.8" />
+	<path d="M372 306 L482 276 L590 306 L548 330 L424 332 Z" fill="#2e4958" />
+	<rect x="414" y="254" width="102" height="36" rx="6" fill="#f7efe2" stroke="#2e4958" stroke-width="5" />
+	<path d="M690 286 L784 260 L880 288 L842 308 L728 310 Z" fill="#2e4958" />
+	<rect x="724" y="240" width="92" height="34" rx="6" fill="#f7efe2" stroke="#2e4958" stroke-width="5" />
+	<g fill="#7a4d1e" opacity="0.9">
+		<path d="M150 466 l18 -70 l18 70 Z" />
+		<path d="M190 454 l16 -62 l18 62 Z" />
+		<path d="M970 464 l20 -76 l22 76 Z" />
+		<path d="M1020 448 l16 -58 l18 58 Z" />
+	</g>
+</svg>
