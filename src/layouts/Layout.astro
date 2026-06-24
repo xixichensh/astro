@@ -1,4 +1,6 @@
 ---
+import BlogAssistant from '../components/BlogAssistant.astro';
+
 interface Props {
 	title?: string;
 	description?: string;
@@ -38,6 +40,7 @@ const icoHref = `${base}/favicon.ico`;
 			</nav>
 		</header>
 		<slot />
+		<BlogAssistant />
 		<footer class="site-footer">
 			<p>Built with Astro. Written slowly, shipped simply.</p>
 		</footer>

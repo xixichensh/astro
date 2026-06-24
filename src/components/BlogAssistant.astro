@@ -1,0 +1,479 @@
+---
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+const searchIndexHref = `${base}/search-index.json`;
+---
+
+<div class="blog-assistant" data-blog-assistant data-index-url={searchIndexHref}>
+	<button
+		class="assistant-trigger"
+		type="button"
+		aria-label="打开博客助手"
+		aria-expanded="false"
+		data-assistant-trigger
+	>
+		<span aria-hidden="true">AI</span>
+	</button>
+
+	<section
+		class="assistant-panel"
+		role="dialog"
+		aria-modal="false"
+		aria-labelledby="assistant-title"
+		hidden
+		data-assistant-panel
+	>
+		<header class="assistant-header">
+			<div>
+				<p>Blog Assistant</p>
+				<h2 id="assistant-title">问问博客</h2>
+			</div>
+			<button class="assistant-close" type="button" aria-label="关闭博客助手" data-assistant-close>
+				×
+			</button>
+		</header>
+
+		<form class="assistant-form" data-assistant-form>
+			<label class="sr-only" for="blog-assistant-query">搜索博客内容</label>
+			<input
+				id="blog-assistant-query"
+				type="search"
+				name="query"
+				autocomplete="off"
+				placeholder="输入问题或关键词"
+				data-assistant-input
+			/>
+			<button type="submit">搜索</button>
+		</form>
+
+		<div class="assistant-state" data-assistant-state>输入内容后开始搜索。</div>
+		<div class="assistant-results" data-assistant-results></div>
+	</section>
+</div>
+
+<script>
+	const assistants = document.querySelectorAll('[data-blog-assistant]');
+
+	const normalize = (value) => value.toLowerCase().normalize('NFKC').trim();
+
+	const unique = (items) => Array.from(new Set(items.filter(Boolean)));
+
+	const getTerms = (query) => {
+		const normalized = normalize(query);
+		const words = normalized.match(/[\p{L}\p{N}]+/gu) ?? [];
+		const cjkChars = Array.from(normalized.match(/[\u3400-\u9fff]/gu) ?? []);
+		const cjkBigrams = cjkChars.slice(0, -1).map((char, index) => `${char}${cjkChars[index + 1]}`);
+
+		return unique([normalized, ...words, ...cjkBigrams]).filter((term) => term.length > 1);
+	};
+
+	const escapeHtml = (value) =>
+		value.replace(/[&<>"']/g, (char) => {
+			const entities = {
+				'&': '&amp;',
+				'<': '&lt;',
+				'>': '&gt;',
+				'"': '&quot;',
+				"'": '&#39;',
+			};
+
+			return entities[char];
+		});
+
+	const getSnippet = (post, terms) => {
+		const source = post.content || post.description;
+		const normalizedSource = normalize(source);
+		const match = terms.find((term) => normalizedSource.includes(term));
+		const index = match ? normalizedSource.indexOf(match) : 0;
+		const start = Math.max(0, index - 42);
+		const end = Math.min(source.length, start + 132);
+		const prefix = start > 0 ? '...' : '';
+		const suffix = end < source.length ? '...' : '';
+
+		return `${prefix}${source.slice(start, end)}${suffix}`;
+	};
+
+	const scorePost = (post, terms, query) => {
+		const title = normalize(post.title);
+		const description = normalize(post.description);
+		const tags = normalize(post.tags.join(' '));
+		const content = normalize(post.content);
+		let score = 0;
+
+		if (title.includes(query)) score += 18;
+		if (description.includes(query)) score += 10;
+		if (content.includes(query)) score += 8;
+
+		for (const term of terms) {
+			if (title.includes(term)) score += 9;
+			if (tags.includes(term)) score += 7;
+			if (description.includes(term)) score += 5;
+			if (content.includes(term)) score += 2;
+		}
+
+		return score;
+	};
+
+	for (const assistant of assistants) {
+		const trigger = assistant.querySelector('[data-assistant-trigger]');
+		const panel = assistant.querySelector('[data-assistant-panel]');
+		const closeButton = assistant.querySelector('[data-assistant-close]');
+		const form = assistant.querySelector('[data-assistant-form]');
+		const input = assistant.querySelector('[data-assistant-input]');
+		const state = assistant.querySelector('[data-assistant-state]');
+		const results = assistant.querySelector('[data-assistant-results]');
+		const indexUrl = assistant.dataset.indexUrl;
+		let indexPromise;
+
+		const loadIndex = () => {
+			indexPromise ??= fetch(indexUrl).then((response) => {
+				if (!response.ok) throw new Error('Search index failed to load.');
+				return response.json();
+			});
+
+			return indexPromise;
+		};
+
+		const openPanel = () => {
+			panel.hidden = false;
+			trigger.setAttribute('aria-expanded', 'true');
+			requestAnimationFrame(() => input.focus());
+			loadIndex().catch(() => {
+				state.textContent = '搜索索引加载失败，请稍后再试。';
+			});
+		};
+
+		const closePanel = () => {
+			panel.hidden = true;
+			trigger.setAttribute('aria-expanded', 'false');
+			trigger.focus();
+		};
+
+		const renderResults = (posts, terms) => {
+			if (posts.length === 0) {
+				state.textContent = '没有找到相关内容。';
+				results.innerHTML = '';
+				return;
+			}
+
+			state.textContent = `找到 ${posts.length} 条相关内容。`;
+			results.innerHTML = posts
+				.map(({ post }) => {
+					const snippet = getSnippet(post, terms);
+					const tags = post.tags.slice(0, 3).map((tag) => `<span>${escapeHtml(tag)}</span>`).join('');
+
+					return `
+						<article class="assistant-result">
+							<a href="${escapeHtml(post.url)}">
+								<div class="assistant-result-meta">
+									<time datetime="${escapeHtml(post.pubDate)}">${escapeHtml(
+										new Intl.DateTimeFormat('zh-CN', {
+											year: 'numeric',
+											month: 'short',
+											day: 'numeric',
+										}).format(new Date(post.pubDate)),
+									)}</time>
+								</div>
+								<h3>${escapeHtml(post.title)}</h3>
+								<p>${escapeHtml(snippet)}</p>
+								${tags ? `<div class="assistant-tags">${tags}</div>` : ''}
+							</a>
+						</article>
+					`;
+				})
+				.join('');
+		};
+
+		const search = async (query) => {
+			const normalizedQuery = normalize(query);
+			const terms = getTerms(query);
+
+			if (!normalizedQuery || terms.length === 0) {
+				state.textContent = '输入内容后开始搜索。';
+				results.innerHTML = '';
+				return;
+			}
+
+			state.textContent = '搜索中...';
+
+			try {
+				const posts = await loadIndex();
+				const matches = posts
+					.map((post) => ({ post, score: scorePost(post, terms, normalizedQuery) }))
+					.filter((item) => item.score > 0)
+					.sort((a, b) => b.score - a.score)
+					.slice(0, 5);
+
+				renderResults(matches, terms);
+			} catch {
+				state.textContent = '搜索索引加载失败，请稍后再试。';
+				results.innerHTML = '';
+			}
+		};
+
+		trigger.addEventListener('click', () => {
+			if (panel.hidden) {
+				openPanel();
+			} else {
+				closePanel();
+			}
+		});
+
+		closeButton.addEventListener('click', closePanel);
+
+		form.addEventListener('submit', (event) => {
+			event.preventDefault();
+			search(input.value);
+		});
+
+		input.addEventListener('input', () => {
+			window.clearTimeout(input.searchTimer);
+			input.searchTimer = window.setTimeout(() => search(input.value), 180);
+		});
+
+		document.addEventListener('keydown', (event) => {
+			if (event.key === 'Escape' && !panel.hidden) closePanel();
+		});
+	}
+</script>
+
+<style>
+	.blog-assistant {
+		position: fixed;
+		right: 22px;
+		bottom: 22px;
+		z-index: 30;
+	}
+
+	.assistant-trigger {
+		display: grid;
+		width: 58px;
+		height: 58px;
+		place-items: center;
+		border: 0;
+		border-radius: 50%;
+		background: var(--surface-strong);
+		color: #fff;
+		box-shadow: 0 18px 42px rgba(17, 24, 39, 0.22);
+		cursor: pointer;
+		font: inherit;
+		font-weight: 900;
+	}
+
+	.assistant-trigger:hover,
+	.assistant-trigger:focus-visible {
+		background: var(--teal);
+		outline: none;
+	}
+
+	.assistant-panel {
+		position: absolute;
+		right: 0;
+		bottom: 72px;
+		display: grid;
+		width: min(390px, calc(100vw - 32px));
+		max-height: min(620px, calc(100vh - 120px));
+		grid-template-rows: auto auto auto minmax(0, 1fr);
+		overflow: hidden;
+		border: 1px solid rgba(17, 24, 39, 0.12);
+		border-radius: 8px;
+		background: rgba(255, 255, 255, 0.96);
+		box-shadow: 0 24px 70px rgba(17, 24, 39, 0.2);
+		backdrop-filter: blur(18px);
+	}
+
+	.assistant-panel[hidden] {
+		display: none;
+	}
+
+	.assistant-header {
+		display: flex;
+		align-items: start;
+		justify-content: space-between;
+		gap: 16px;
+		border-bottom: 1px solid rgba(17, 24, 39, 0.08);
+		padding: 18px 18px 14px;
+	}
+
+	.assistant-header p,
+	.assistant-header h2 {
+		margin: 0;
+	}
+
+	.assistant-header p {
+		color: var(--teal);
+		font-size: 0.74rem;
+		font-weight: 800;
+		text-transform: uppercase;
+	}
+
+	.assistant-header h2 {
+		margin-top: 2px;
+		color: var(--surface-strong);
+		font-size: 1.22rem;
+		line-height: 1.2;
+		letter-spacing: 0;
+	}
+
+	.assistant-close {
+		display: grid;
+		width: 34px;
+		height: 34px;
+		flex: 0 0 auto;
+		place-items: center;
+		border: 1px solid rgba(17, 24, 39, 0.1);
+		border-radius: 8px;
+		background: #fff;
+		color: var(--muted);
+		cursor: pointer;
+		font: inherit;
+		font-size: 1.35rem;
+		line-height: 1;
+	}
+
+	.assistant-close:hover,
+	.assistant-close:focus-visible {
+		border-color: rgba(15, 118, 110, 0.34);
+		color: var(--surface-strong);
+		outline: none;
+	}
+
+	.assistant-form {
+		display: grid;
+		grid-template-columns: minmax(0, 1fr) auto;
+		gap: 8px;
+		padding: 14px 18px 10px;
+	}
+
+	.assistant-form input,
+	.assistant-form button {
+		min-height: 42px;
+		border-radius: 8px;
+		font: inherit;
+	}
+
+	.assistant-form input {
+		width: 100%;
+		border: 1px solid rgba(17, 24, 39, 0.14);
+		padding: 0 12px;
+		background: #fff;
+		color: var(--ink);
+	}
+
+	.assistant-form input:focus {
+		border-color: var(--teal);
+		outline: 3px solid rgba(15, 118, 110, 0.14);
+	}
+
+	.assistant-form button {
+		border: 0;
+		padding: 0 14px;
+		background: var(--teal);
+		color: #fff;
+		cursor: pointer;
+		font-weight: 800;
+	}
+
+	.assistant-form button:hover,
+	.assistant-form button:focus-visible {
+		background: var(--surface-strong);
+		outline: none;
+	}
+
+	.assistant-state {
+		padding: 0 18px 10px;
+		color: var(--muted);
+		font-size: 0.88rem;
+		font-weight: 650;
+	}
+
+	.assistant-results {
+		display: grid;
+		gap: 10px;
+		overflow-y: auto;
+		padding: 0 18px 18px;
+	}
+
+	.assistant-results :global(.assistant-result) {
+		border: 1px solid rgba(17, 24, 39, 0.08);
+		border-radius: 8px;
+		background: rgba(246, 243, 235, 0.54);
+	}
+
+	.assistant-results :global(.assistant-result a) {
+		display: grid;
+		gap: 7px;
+		padding: 12px;
+		text-decoration: none;
+	}
+
+	.assistant-results :global(.assistant-result:hover),
+	.assistant-results :global(.assistant-result:has(a:focus-visible)) {
+		border-color: rgba(15, 118, 110, 0.32);
+		background: #fff;
+	}
+
+	.assistant-results :global(.assistant-result a:focus-visible) {
+		outline: none;
+	}
+
+	.assistant-results :global(.assistant-result-meta) {
+		display: flex;
+		justify-content: space-between;
+		gap: 8px;
+		color: var(--muted);
+		font-size: 0.76rem;
+		font-weight: 800;
+	}
+
+	.assistant-results :global(.assistant-result h3) {
+		margin: 0;
+		color: var(--surface-strong);
+		font-size: 1rem;
+		line-height: 1.3;
+		letter-spacing: 0;
+	}
+
+	.assistant-results :global(.assistant-result p) {
+		margin: 0;
+		color: #42505f;
+		font-size: 0.9rem;
+		line-height: 1.55;
+	}
+
+	.assistant-results :global(.assistant-tags) {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 6px;
+	}
+
+	.assistant-results :global(.assistant-tags span) {
+		border-radius: 999px;
+		padding: 2px 8px;
+		background: rgba(15, 118, 110, 0.08);
+		color: var(--teal);
+		font-size: 0.76rem;
+		font-weight: 800;
+	}
+
+	.sr-only {
+		position: absolute;
+		overflow: hidden;
+		width: 1px;
+		height: 1px;
+		clip: rect(0, 0, 0, 0);
+		white-space: nowrap;
+	}
+
+	@media (max-width: 560px) {
+		.blog-assistant {
+			right: 16px;
+			bottom: 16px;
+		}
+
+		.assistant-panel {
+			right: -4px;
+			bottom: 68px;
+			max-height: calc(100vh - 104px);
+		}
+	}
+</style>
