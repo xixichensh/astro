@@ -412,12 +412,21 @@ const usesWideTables = post.id === '2026-07-15-2025年上海中本贯通分数�
 		-webkit-overflow-scrolling: touch;
 	}
 
-	.content--wide-tables :global(table) {
+	/* Only data-dense tables need to extend beyond the article column. */
+	.content--wide-tables :global(table:has(tr > :nth-child(7))) {
 		width: min(1200px, calc(100vw - 32px));
 		max-width: none;
 		margin-right: 0;
 		margin-left: 50%;
 		transform: translateX(-50%);
+	}
+
+	/* Keep short lookup tables compact instead of stretching them to 1200px. */
+	.content--wide-tables :global(table:not(:has(tr > :nth-child(7)))) {
+		width: fit-content;
+		max-width: 100%;
+		margin-right: auto;
+		margin-left: 0;
 	}
 
 	.content :global(th),
