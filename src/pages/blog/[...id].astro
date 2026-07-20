@@ -24,7 +24,9 @@ const formatDate = (date: Date) =>
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 const homeHref = `${base}/`;
 const usesWideTables = post.id === '2026-07-15-2025年上海中本贯通分数线汇总';
-const usesCompactTitle = post.data.title.length > 28;
+const titleLength = Array.from(post.data.title.replace(/\s/g, '')).length;
+const usesCompactTitle = titleLength > 22;
+const usesExtraCompactTitle = titleLength > 34;
 ---
 
 <Layout title={`${post.data.title} - 滴闯关`} description={post.data.description}>
@@ -33,7 +35,14 @@ const usesCompactTitle = post.data.title.length > 28;
 		<article>
 			<header class="article-header">
 				<p class="kicker">Article</p>
-				<h1 class:list={{ 'article-title--compact': usesCompactTitle }}>{post.data.title}</h1>
+				<h1
+					class:list={{
+						'article-title--compact': usesCompactTitle,
+						'article-title--extra-compact': usesExtraCompactTitle,
+					}}
+				>
+					{post.data.title}
+				</h1>
 				<div class="article-meta">
 					<time datetime={post.data.pubDate.toISOString()}>{formatDate(post.data.pubDate)}</time>
 					<span>{post.data.description}</span>
@@ -85,7 +94,7 @@ const usesCompactTitle = post.data.title.length > 28;
 		overflow: hidden;
 		border: 1px solid rgba(17, 24, 39, 0.08);
 		border-radius: 8px;
-		padding: clamp(28px, 7vw, 56px);
+		padding: clamp(26px, 5vw, 48px);
 		background:
 			linear-gradient(135deg, rgba(255, 255, 255, 0.92), rgba(255, 255, 255, 0.68)),
 			linear-gradient(120deg, rgba(15, 118, 110, 0.12), rgba(231, 111, 81, 0.12));
@@ -119,15 +128,21 @@ const usesCompactTitle = post.data.title.length > 28;
 		z-index: 1;
 		max-width: 720px;
 		margin: 12px 0 22px;
-		font-size: clamp(2.35rem, 7vw, 5rem);
-		line-height: 1;
-		letter-spacing: 0;
+		font-size: clamp(1.9rem, 4.2vw, 3.2rem);
+		line-height: 1.06;
+		letter-spacing: -0.025em;
+		text-wrap: balance;
 	}
 
 	h1.article-title--compact {
 		max-width: 780px;
-		font-size: clamp(1.75rem, 5vw, 3.6rem);
-		line-height: 1.08;
+		font-size: clamp(1.75rem, 3.6vw, 2.8rem);
+		line-height: 1.12;
+	}
+
+	h1.article-title--extra-compact {
+		font-size: clamp(1.55rem, 3vw, 2.35rem);
+		line-height: 1.16;
 	}
 
 	.article-meta {
