@@ -822,6 +822,205 @@ const usesExtraCompactTitle = titleLength > 34;
 		color: var(--coral);
 	}
 
+	.content :global(.flower-range-chart),
+	.content :global(.city-price-chart) {
+		margin: 1.3rem 0 1.6rem;
+		border: 1px solid rgba(17, 24, 39, 0.09);
+		border-radius: 18px;
+		padding: 1.15rem 1.25rem 1rem;
+		background:
+			linear-gradient(135deg, rgba(15, 118, 110, 0.075), transparent 46%),
+			rgba(255, 255, 255, 0.82);
+		box-shadow: 0 14px 38px rgba(17, 24, 39, 0.06);
+	}
+
+	.content :global(.flower-chart-heading) {
+		display: flex;
+		align-items: flex-end;
+		justify-content: space-between;
+		gap: 1rem;
+		margin-bottom: 0.85rem;
+	}
+
+	.content :global(.flower-chart-heading div) {
+		display: grid;
+		gap: 0.12rem;
+	}
+
+	.content :global(.flower-chart-heading span) {
+		color: var(--teal);
+		font-size: 0.72rem;
+		font-weight: 900;
+		letter-spacing: 0.08em;
+	}
+
+	.content :global(.flower-chart-heading strong) {
+		color: var(--surface-strong);
+		font-size: 1.12rem;
+	}
+
+	.content :global(.flower-chart-heading small),
+	.content :global(.flower-chart-note) {
+		color: var(--muted);
+		font-size: 0.72rem;
+	}
+
+	.content :global(.flower-chart-heading small) {
+		white-space: nowrap;
+	}
+
+	.content :global(.flower-range-axis),
+	.content :global(.flower-range-row) {
+		display: grid;
+		grid-template-columns: 5.4rem minmax(0, 1fr) 5.6rem;
+		align-items: center;
+		gap: 0.65rem;
+	}
+
+	.content :global(.flower-range-axis) {
+		margin-bottom: 0.35rem;
+	}
+
+	.content :global(.flower-range-axis div) {
+		display: flex;
+		justify-content: space-between;
+		color: #89929d;
+		font-size: 0.62rem;
+	}
+
+	.content :global(.flower-range-axis i),
+	.content :global(.flower-range-track i),
+	.content :global(.city-price-legend i),
+	.content :global(.city-price-row i) {
+		font-style: normal;
+	}
+
+	.content :global(.flower-range-rows) {
+		display: grid;
+		gap: 0.58rem;
+	}
+
+	.content :global(.flower-range-row > span) {
+		color: var(--muted);
+		font-size: 0.75rem;
+		font-weight: 800;
+	}
+
+	.content :global(.flower-range-track) {
+		position: relative;
+		height: 0.95rem;
+		border-radius: 999px;
+		background:
+			repeating-linear-gradient(90deg, rgba(17, 24, 39, 0.05) 0, rgba(17, 24, 39, 0.05) 1px, transparent 1px, transparent 20%),
+			rgba(17, 24, 39, 0.035);
+	}
+
+	.content :global(.flower-range-track i) {
+		position: absolute;
+		top: 0;
+		bottom: 0;
+		left: var(--price-start);
+		width: max(var(--price-span), 6px);
+		border-radius: inherit;
+		background: linear-gradient(90deg, #5aa89f, var(--teal));
+	}
+
+	.content :global(.flower-range-row-wide .flower-range-track i) {
+		background: linear-gradient(90deg, #ff967b, var(--coral));
+	}
+
+	.content :global(.flower-range-row > strong) {
+		color: var(--surface-strong);
+		font-size: 0.75rem;
+		font-variant-numeric: tabular-nums;
+		text-align: right;
+		white-space: nowrap;
+	}
+
+	.content :global(.flower-chart-note) {
+		margin: 0.85rem 0 0;
+		line-height: 1.55;
+	}
+
+	.content :global(.city-price-legend) {
+		display: flex;
+		gap: 1rem;
+		justify-content: flex-end;
+		margin: -0.2rem 0 0.6rem;
+		color: var(--muted);
+		font-size: 0.72rem;
+	}
+
+	.content :global(.city-price-legend span) {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.35rem;
+	}
+
+	.content :global(.city-price-legend i) {
+		width: 0.75rem;
+		height: 0.45rem;
+		border-radius: 999px;
+	}
+
+	.content :global(.city-price-groups) {
+		display: grid;
+		gap: 0.95rem;
+	}
+
+	.content :global(.city-price-group) {
+		display: grid;
+		gap: 0.35rem;
+	}
+
+	.content :global(.city-price-group > strong) {
+		color: var(--surface-strong);
+		font-size: 0.8rem;
+	}
+
+	.content :global(.city-price-row) {
+		display: grid;
+		grid-template-columns: 2.5rem minmax(0, 1fr) 2.5rem;
+		align-items: center;
+		gap: 0.55rem;
+	}
+
+	.content :global(.city-price-row > span),
+	.content :global(.city-price-row > b) {
+		color: var(--muted);
+		font-size: 0.72rem;
+	}
+
+	.content :global(.city-price-row > b) {
+		color: var(--surface-strong);
+		font-variant-numeric: tabular-nums;
+		text-align: right;
+	}
+
+	.content :global(.city-price-row > div) {
+		height: 0.72rem;
+		overflow: hidden;
+		border-radius: 999px;
+		background:
+			repeating-linear-gradient(90deg, rgba(17, 24, 39, 0.05) 0, rgba(17, 24, 39, 0.05) 1px, transparent 1px, transparent 22.22%),
+			rgba(17, 24, 39, 0.035);
+	}
+
+	.content :global(.city-price-row i) {
+		display: block;
+		width: max(var(--city-price-width), 6px);
+		height: 100%;
+		border-radius: inherit;
+	}
+
+	.content :global(.city-price-kunming) {
+		background: var(--teal);
+	}
+
+	.content :global(.city-price-shanghai) {
+		background: var(--coral);
+	}
+
 	.content :global(.application-checklist) {
 		display: grid;
 		gap: 0.75rem;
@@ -978,6 +1177,46 @@ const usesExtraCompactTitle = titleLength > 34;
 
 		.content :global(.score-chart-axis div) {
 			font-size: 0.56rem;
+		}
+
+		.content :global(.flower-range-chart),
+		.content :global(.city-price-chart) {
+			border-radius: 14px;
+			padding: 0.9rem 0.75rem;
+		}
+
+		.content :global(.flower-chart-heading) {
+			align-items: flex-start;
+			gap: 0.45rem;
+		}
+
+		.content :global(.flower-chart-heading strong) {
+			font-size: 1rem;
+		}
+
+		.content :global(.flower-range-axis),
+		.content :global(.flower-range-row) {
+			grid-template-columns: 4.15rem minmax(0, 1fr) 4.75rem;
+			gap: 0.38rem;
+		}
+
+		.content :global(.flower-range-axis div) {
+			font-size: 0.55rem;
+		}
+
+		.content :global(.flower-range-row > span),
+		.content :global(.flower-range-row > strong) {
+			font-size: 0.66rem;
+		}
+
+		.content :global(.city-price-legend) {
+			justify-content: flex-start;
+			margin-top: 0;
+		}
+
+		.content :global(.city-price-row) {
+			grid-template-columns: 2.25rem minmax(0, 1fr) 2.25rem;
+			gap: 0.4rem;
 		}
 
 		.content :global(.insight-strip) {
