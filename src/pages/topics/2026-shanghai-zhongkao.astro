@@ -1,0 +1,460 @@
+---
+import { getCollection } from 'astro:content';
+import Layout from '../../layouts/Layout.astro';
+
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+const homeHref = `${base}/`;
+const postHref = (id: string) => `${base}/blog/${id}/`;
+
+const postById = new Map(
+	(await getCollection('blog'))
+		.filter((post) => !post.data.draft)
+		.map((post) => [post.id, post]),
+);
+
+const readingPlan = [
+	{
+		id: '2026-07-20-2026年上海高中自主招生学校汇总',
+		step: '01',
+		stage: '准备与比较',
+		action: '先看学校范围、分类计划、测试安排、住宿和收费，再按招生代码缩小选择范围。',
+		facts: ['95所学校', '97个名单代码', '16个区'],
+	},
+	{
+		id: '2026-07-06-2026-年上海市高中学校自主招生预录取学生名单',
+		step: '02',
+		stage: '录取查询',
+		action: '综合测试结束后，按区和招生代码核对预录取公示范围，并转到正式录取入口查询结果。',
+		facts: ['公示历史目录', '正式录取入口', '状态说明'],
+	},
+	{
+		id: '2026-07-15-2025年上海中本贯通分数线汇总',
+		step: '03',
+		stage: '并行路径',
+		action: '如果同时考虑中本贯通，用近三年分数、学费、专业和面试要求判断是否适合七年培养路径。',
+		facts: ['86个项目', '三年分数对比', '学费与地址'],
+	},
+] as const;
+
+const steps = readingPlan.map((item) => {
+	const post = postById.get(item.id);
+
+	if (!post) {
+		throw new Error(`专题文章不存在：${item.id}`);
+	}
+
+	return { ...item, post };
+});
+
+const formatDate = (date: Date) =>
+	new Intl.DateTimeFormat('zh-CN', {
+		year: 'numeric',
+		month: 'long',
+		day: 'numeric',
+	}).format(date);
+---
+
+<Layout
+	title="2026上海中考升学专题 - 滴闯关"
+	description="集中整理2026年上海高中自主招生学校方案、预录取与正式录取查询，以及中本贯通分数线，按升学阶段提供阅读顺序。"
+>
+	<main class="topic-shell">
+		<a class="back-link" href={homeHref}>返回首页</a>
+
+		<section class="topic-hero">
+			<div class="topic-copy">
+				<p class="eyebrow">2026 SHANGHAI ZHONGKAO</p>
+				<h1>2026上海中考升学专题</h1>
+				<p class="lead">
+					把分散的学校方案、录取查询和中本贯通数据放在同一条阅读路径里。先判断自己处于哪个阶段，再进入对应资料，不必从长表格里反复寻找入口。
+				</p>
+			</div>
+			<div class="topic-summary" aria-label="专题内容概览">
+				<div><strong>3</strong><span>篇核心资料</span></div>
+				<div><strong>2</strong><span>条升学路径</span></div>
+				<div><strong>1</strong><span>个统一入口</span></div>
+			</div>
+		</section>
+
+		<section class="path-section" aria-labelledby="choose-path">
+			<div class="section-heading">
+				<p>Start here</p>
+				<h2 id="choose-path">先判断你现在要解决什么</h2>
+			</div>
+			<div class="path-grid">
+				<article class="path-card path-card-primary">
+					<span>路径 A</span>
+					<h3>准备参加或查询高中自主招生</h3>
+					<p>先阅读第01篇比较学校方案；综合测试结束后，再阅读第02篇查询录取状态。</p>
+					<a href={postHref(steps[0].post.id)}>从学校方案开始 →</a>
+				</article>
+				<article class="path-card">
+					<span>路径 B</span>
+					<h3>同时考虑中本贯通</h3>
+					<p>直接阅读第03篇，重点比较专业、近三年分数、七年培养成本和转段要求。</p>
+					<a href={postHref(steps[2].post.id)}>查看中本贯通 →</a>
+				</article>
+			</div>
+		</section>
+
+		<section class="reading-section" aria-labelledby="reading-order">
+			<div class="section-heading">
+				<p>Reading order</p>
+				<h2 id="reading-order">推荐阅读顺序</h2>
+			</div>
+
+			<div class="reading-list">
+				{
+					steps.map(({ step, stage, action, facts, post }) => (
+						<article class="reading-card">
+							<div class="step-number" aria-hidden="true">{step}</div>
+							<div class="reading-body">
+								<div class="reading-meta">
+									<span>{stage}</span>
+									<time datetime={post.data.pubDate.toISOString()}>
+										{formatDate(post.data.pubDate)}
+									</time>
+								</div>
+								<h3>{post.data.title}</h3>
+								<p class="description">{post.data.description}</p>
+								<p class="action"><strong>怎么读：</strong>{action}</p>
+								<ul aria-label="文章覆盖内容">
+									{facts.map((fact) => <li>{fact}</li>)}
+								</ul>
+								<a class="read-link" href={postHref(post.id)}>打开这篇资料 <span>→</span></a>
+							</div>
+						</article>
+					))
+				}
+			</div>
+		</section>
+
+		<aside class="topic-note">
+			<strong>阅读提醒</strong>
+			<p>招生方案、名单链接和录取分数都具有时效性。专题页负责组织阅读顺序，具体数据口径、核验日期和官方来源以各篇文章中的说明为准。</p>
+		</aside>
+	</main>
+</Layout>
+
+<style>
+	.topic-shell {
+		width: min(1060px, calc(100% - 32px));
+		margin: 0 auto;
+		padding: 42px 0 96px;
+	}
+
+	.back-link {
+		display: inline-flex;
+		margin-bottom: 28px;
+		border: 1px solid rgba(17, 24, 39, 0.1);
+		border-radius: 8px;
+		padding: 8px 12px;
+		background: rgba(255, 255, 255, 0.7);
+		color: var(--teal);
+		font-weight: 700;
+		text-decoration: none;
+	}
+
+	.back-link:hover,
+	.back-link:focus-visible {
+		text-decoration: underline;
+	}
+
+	.topic-hero {
+		display: grid;
+		grid-template-columns: minmax(0, 1fr) 280px;
+		gap: 48px;
+		align-items: end;
+		overflow: hidden;
+		border: 1px solid rgba(17, 24, 39, 0.08);
+		border-radius: 18px;
+		padding: clamp(30px, 6vw, 64px);
+		background:
+			linear-gradient(135deg, rgba(255, 255, 255, 0.94), rgba(255, 255, 255, 0.72)),
+			linear-gradient(120deg, rgba(15, 118, 110, 0.18), rgba(217, 154, 37, 0.14));
+		box-shadow: var(--shadow);
+	}
+
+	.eyebrow {
+		margin: 0;
+		color: var(--teal);
+		font-size: 0.82rem;
+		font-weight: 850;
+		letter-spacing: 0.08em;
+	}
+
+	h1 {
+		max-width: 680px;
+		margin: 12px 0 18px;
+		font-size: clamp(2.35rem, 6vw, 4.4rem);
+		line-height: 1.06;
+		letter-spacing: -0.035em;
+		text-wrap: balance;
+	}
+
+	.lead {
+		max-width: 660px;
+		margin: 0;
+		color: var(--muted);
+		font-size: 1.08rem;
+		font-weight: 590;
+	}
+
+	.topic-summary {
+		display: grid;
+		gap: 10px;
+	}
+
+	.topic-summary div {
+		display: flex;
+		align-items: baseline;
+		justify-content: space-between;
+		gap: 16px;
+		border-bottom: 1px solid rgba(17, 24, 39, 0.1);
+		padding: 10px 0;
+	}
+
+	.topic-summary strong {
+		color: var(--coral);
+		font-size: 2.2rem;
+		line-height: 1;
+	}
+
+	.topic-summary span {
+		color: var(--muted);
+		font-size: 0.9rem;
+		font-weight: 750;
+	}
+
+	.path-section,
+	.reading-section {
+		margin-top: 64px;
+	}
+
+	.section-heading {
+		display: flex;
+		align-items: end;
+		justify-content: space-between;
+		gap: 16px;
+		margin-bottom: 18px;
+		border-bottom: 1px solid var(--line);
+		padding-bottom: 14px;
+	}
+
+	.section-heading p,
+	.section-heading h2 {
+		margin: 0;
+	}
+
+	.section-heading p {
+		color: var(--coral);
+		font-size: 0.82rem;
+		font-weight: 850;
+		text-transform: uppercase;
+	}
+
+	.section-heading h2 {
+		font-size: clamp(1.5rem, 4vw, 2.15rem);
+		letter-spacing: -0.015em;
+	}
+
+	.path-grid {
+		display: grid;
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+		gap: 16px;
+	}
+
+	.path-card {
+		border: 1px solid rgba(17, 24, 39, 0.09);
+		border-radius: 14px;
+		padding: 24px;
+		background: rgba(255, 255, 255, 0.72);
+	}
+
+	.path-card-primary {
+		background: rgba(15, 118, 110, 0.07);
+	}
+
+	.path-card > span {
+		color: var(--teal);
+		font-size: 0.78rem;
+		font-weight: 850;
+		text-transform: uppercase;
+	}
+
+	.path-card h3 {
+		margin: 8px 0 10px;
+		font-size: 1.35rem;
+		line-height: 1.3;
+	}
+
+	.path-card p {
+		margin: 0 0 18px;
+		color: var(--muted);
+	}
+
+	.path-card a,
+	.read-link {
+		color: var(--teal);
+		font-weight: 800;
+		text-decoration: none;
+	}
+
+	.path-card a:hover,
+	.path-card a:focus-visible,
+	.read-link:hover,
+	.read-link:focus-visible {
+		text-decoration: underline;
+	}
+
+	.reading-list {
+		display: grid;
+		gap: 16px;
+	}
+
+	.reading-card {
+		display: grid;
+		grid-template-columns: 76px minmax(0, 1fr);
+		gap: 22px;
+		border: 1px solid rgba(17, 24, 39, 0.09);
+		border-radius: 16px;
+		padding: 24px;
+		background: rgba(255, 255, 255, 0.75);
+		box-shadow: 0 8px 28px rgba(17, 24, 39, 0.04);
+	}
+
+	.step-number {
+		display: grid;
+		width: 64px;
+		height: 64px;
+		place-items: center;
+		border-radius: 14px;
+		background: var(--surface-strong);
+		color: white;
+		font-size: 1.25rem;
+		font-weight: 850;
+	}
+
+	.reading-meta {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 8px 14px;
+		color: var(--muted);
+		font-size: 0.84rem;
+		font-weight: 720;
+	}
+
+	.reading-meta span {
+		color: var(--coral);
+	}
+
+	.reading-card h3 {
+		margin: 6px 0 8px;
+		font-size: clamp(1.35rem, 4vw, 1.9rem);
+		line-height: 1.25;
+	}
+
+	.description {
+		margin: 0;
+		color: var(--muted);
+	}
+
+	.action {
+		margin: 16px 0;
+		border-left: 3px solid var(--gold);
+		padding-left: 12px;
+		color: #394553;
+	}
+
+	.reading-card ul {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 8px;
+		margin: 0 0 18px;
+		padding: 0;
+		list-style: none;
+	}
+
+	.reading-card li {
+		border: 1px solid rgba(15, 118, 110, 0.18);
+		border-radius: 999px;
+		padding: 3px 10px;
+		background: rgba(15, 118, 110, 0.06);
+		color: var(--teal);
+		font-size: 0.82rem;
+		font-weight: 720;
+	}
+
+	.topic-note {
+		margin-top: 36px;
+		border: 1px solid rgba(217, 154, 37, 0.26);
+		border-radius: 14px;
+		padding: 18px 20px;
+		background: rgba(255, 251, 235, 0.76);
+	}
+
+	.topic-note strong {
+		color: #9a6511;
+		font-size: 0.84rem;
+	}
+
+	.topic-note p {
+		margin: 6px 0 0;
+		color: var(--muted);
+	}
+
+	@media (max-width: 760px) {
+		.topic-shell {
+			padding-top: 28px;
+		}
+
+		.topic-hero,
+		.path-grid {
+			grid-template-columns: 1fr;
+		}
+
+		.topic-hero {
+			gap: 28px;
+		}
+
+		.topic-summary {
+			grid-template-columns: repeat(3, minmax(0, 1fr));
+		}
+
+		.topic-summary div {
+			align-items: flex-start;
+			flex-direction: column;
+			justify-content: flex-start;
+		}
+
+		.section-heading {
+			align-items: flex-start;
+			flex-direction: column;
+			gap: 4px;
+		}
+	}
+
+	@media (max-width: 560px) {
+		.topic-hero {
+			padding: 26px 22px;
+		}
+
+		h1 {
+			font-size: 2.45rem;
+		}
+
+		.topic-summary strong {
+			font-size: 1.8rem;
+		}
+
+		.reading-card {
+			grid-template-columns: 1fr;
+			padding: 20px;
+		}
+
+		.step-number {
+			width: 52px;
+			height: 52px;
+		}
+	}
+</style>
