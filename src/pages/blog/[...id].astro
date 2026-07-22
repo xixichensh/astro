@@ -23,6 +23,27 @@ const formatDate = (date: Date) =>
 
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 const homeHref = `${base}/`;
+const postHref = (id: string) => `${base}/blog/${id}/`;
+const MIN_SERIES_POSTS = 3;
+const publishedPosts = (await getCollection('blog')).filter((entry) => !entry.data.draft);
+const publishedPostById = new Map(publishedPosts.map((entry) => [entry.id, entry]));
+const seriesPosts = post.data.series
+	? publishedPosts
+			.filter((entry) => entry.data.series?.slug === post.data.series?.slug)
+			.sort((a, b) => (a.data.series?.order ?? 0) - (b.data.series?.order ?? 0))
+	: [];
+const hasSeriesNavigation = seriesPosts.length >= MIN_SERIES_POSTS;
+const currentSeriesPosition = hasSeriesNavigation
+	? seriesPosts.findIndex((entry) => entry.id === post.id) + 1
+	: 0;
+const relatedPosts = post.data.relatedPosts.flatMap((id) => {
+	const relatedPost = publishedPostById.get(id);
+	return relatedPost && relatedPost.id !== post.id ? [relatedPost] : [];
+});
+const visibleRelatedPosts = hasSeriesNavigation
+	? relatedPosts.filter((entry) => entry.data.series?.slug !== post.data.series?.slug)
+	: relatedPosts;
+const seriesHubHref = post.data.series?.hub ? `${base}${post.data.series.hub}` : null;
 const usesWideTables = post.id === '2026-07-15-2025年上海中本贯通分数线汇总';
 const titleLength = Array.from(post.data.title.replace(/\s/g, '')).length;
 const usesCompactTitle = titleLength > 22;
@@ -59,6 +80,50 @@ const usesExtraCompactTitle = titleLength > 34;
 			</header>
 			<div class:list={['content', { 'content--wide-tables': usesWideTables }]}>
 				<Content />
+				{
+					hasSeriesNavigation && post.data.series && (
+						<nav class="series-navigation" aria-labelledby={`series-title-${post.data.series.slug}`}>
+							<div class="series-navigation-header">
+								<div>
+									<p>专题导航</p>
+									<h2 id={`series-title-${post.data.series.slug}`}>{post.data.series.title}</h2>
+								</div>
+								<span>第 {currentSeriesPosition} / {seriesPosts.length} 篇</span>
+							</div>
+							<ol>
+								{seriesPosts.map((seriesPost, index) => (
+									<li class:list={{ 'series-navigation-current': seriesPost.id === post.id }}>
+										<span class="series-navigation-number">{String(index + 1).padStart(2, '0')}</span>
+										{seriesPost.id === post.id ? (
+											<span class="series-navigation-title" aria-current="page">
+												{seriesPost.data.title}
+												<small>当前文章</small>
+											</span>
+										) : (
+											<a class="series-navigation-title" href={postHref(seriesPost.id)}>
+												{seriesPost.data.title}
+											</a>
+										)}
+									</li>
+								))}
+							</ol>
+							{seriesHubHref && <a class="series-hub-link" href={seriesHubHref}>查看专题完整阅读顺序 →</a>}
+						</nav>
+					)
+				}
+				{
+					visibleRelatedPosts.length > 0 && (
+						<aside class="related-posts" aria-labelledby={`related-posts-${post.id}`}>
+							<p>继续阅读</p>
+							<h2 id={`related-posts-${post.id}`}>相关阅读</h2>
+							<ul>
+								{visibleRelatedPosts.map((relatedPost) => (
+									<li><a href={postHref(relatedPost.id)}>{relatedPost.data.title}</a></li>
+								))}
+							</ul>
+						</aside>
+					)
+				}
 			</div>
 		</article>
 	</main>
@@ -1089,6 +1154,133 @@ const usesExtraCompactTitle = titleLength > 34;
 		word-break: break-all;
 	}
 
+	.series-navigation {
+		margin-top: 3.2rem;
+		border: 1px solid rgba(15, 118, 110, 0.2);
+		border-radius: 16px;
+		padding: 1.3rem;
+		background:
+			linear-gradient(135deg, rgba(15, 118, 110, 0.08), rgba(255, 255, 255, 0.76)),
+			rgba(255, 255, 255, 0.72);
+		box-shadow: 0 12px 34px rgba(17, 24, 39, 0.05);
+	}
+
+	.series-navigation-header {
+		display: flex;
+		align-items: flex-start;
+		justify-content: space-between;
+		gap: 1rem;
+		margin-bottom: 1rem;
+	}
+
+	.series-navigation-header p,
+	.related-posts > p {
+		margin: 0 0 0.25rem;
+		color: var(--coral);
+		font-size: 0.76rem;
+		font-weight: 900;
+		letter-spacing: 0.08em;
+		text-transform: uppercase;
+	}
+
+	.series-navigation h2,
+	.related-posts h2 {
+		margin: 0;
+		font-size: clamp(1.25rem, 3.5vw, 1.65rem);
+		line-height: 1.3;
+	}
+
+	.series-navigation-header > span {
+		flex: 0 0 auto;
+		border-radius: 999px;
+		padding: 0.24rem 0.65rem;
+		background: rgba(15, 118, 110, 0.1);
+		color: var(--teal);
+		font-size: 0.78rem;
+		font-weight: 800;
+	}
+
+	.series-navigation ol {
+		display: grid;
+		gap: 0.55rem;
+		margin: 0;
+		padding: 0;
+		list-style: none;
+	}
+
+	.series-navigation li {
+		display: grid;
+		grid-template-columns: 2.3rem minmax(0, 1fr);
+		gap: 0.7rem;
+		align-items: center;
+		border: 1px solid rgba(17, 24, 39, 0.07);
+		border-radius: 10px;
+		padding: 0.72rem 0.82rem;
+		background: rgba(255, 255, 255, 0.68);
+	}
+
+	.series-navigation li.series-navigation-current {
+		border-color: rgba(15, 118, 110, 0.3);
+		background: rgba(15, 118, 110, 0.1);
+	}
+
+	.series-navigation-number {
+		color: var(--coral);
+		font-size: 0.78rem;
+		font-weight: 900;
+	}
+
+	.series-navigation-title {
+		color: var(--surface-strong);
+		font-size: 0.93rem;
+		font-weight: 760;
+		line-height: 1.45;
+		text-decoration: none;
+	}
+
+	a.series-navigation-title:hover,
+	a.series-navigation-title:focus-visible,
+	.series-hub-link:hover,
+	.series-hub-link:focus-visible {
+		color: var(--teal);
+		text-decoration: underline;
+	}
+
+	.series-navigation-title small {
+		display: inline-block;
+		margin-left: 0.45rem;
+		color: var(--teal);
+		font-size: 0.72rem;
+		font-weight: 850;
+	}
+
+	.series-hub-link {
+		display: inline-flex;
+		margin-top: 1rem;
+		color: var(--teal);
+		font-size: 0.9rem;
+		font-weight: 850;
+		text-decoration: none;
+	}
+
+	.related-posts {
+		margin-top: 2.8rem;
+		border-top: 1px solid var(--line);
+		padding-top: 1.4rem;
+	}
+
+	.related-posts ul {
+		display: grid;
+		gap: 0.65rem;
+		margin: 1rem 0 0;
+		padding-left: 1.2rem;
+	}
+
+	.related-posts a {
+		color: var(--teal);
+		font-weight: 750;
+	}
+
 	.content :global(.poster-gallery) {
 		display: grid;
 		grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -1138,6 +1330,19 @@ const usesExtraCompactTitle = titleLength > 34;
 	}
 
 	@media (max-width: 640px) {
+		.series-navigation {
+			padding: 1rem;
+		}
+
+		.series-navigation-header {
+			align-items: flex-start;
+			flex-direction: column;
+		}
+
+		.series-navigation li {
+			align-items: start;
+		}
+
 		.content :global(.stat-grid) {
 			grid-template-columns: repeat(2, minmax(0, 1fr));
 		}
