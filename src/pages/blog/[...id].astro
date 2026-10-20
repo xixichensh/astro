@@ -44,7 +44,7 @@ const visibleRelatedPosts = hasSeriesNavigation
 	? relatedPosts.filter((entry) => entry.data.series?.slug !== post.data.series?.slug)
 	: relatedPosts;
 const seriesHubHref = post.data.series?.hub ? `${base}${post.data.series.hub}` : null;
-const usesWideTables = post.id === '2026-07-15-2025年上海中本贯通分数线汇总';
+const usesWideTables = post.id === '2026-07-15-2026年上海中本贯通分数线汇总';
 const titleLength = Array.from(post.data.title.replace(/\s/g, '')).length;
 const usesCompactTitle = titleLength > 22;
 const usesExtraCompactTitle = titleLength > 34;
@@ -65,7 +65,16 @@ const usesExtraCompactTitle = titleLength > 34;
 					{post.data.title}
 				</h1>
 				<div class="article-meta">
-					<time datetime={post.data.pubDate.toISOString()}>{formatDate(post.data.pubDate)}</time>
+					<p class="article-dates">
+						<time datetime={post.data.pubDate.toISOString()}>发布于 {formatDate(post.data.pubDate)}</time>
+						{
+							post.data.updatedDate && (
+								<time datetime={post.data.updatedDate.toISOString()}>
+									更新于 {formatDate(post.data.updatedDate)}
+								</time>
+							)
+						}
+					</p>
 					<span>{post.data.description}</span>
 				</div>
 				{
@@ -218,6 +227,13 @@ const usesExtraCompactTitle = titleLength > 34;
 		max-width: 620px;
 		color: var(--muted);
 		font-size: 1.02rem;
+	}
+
+	.article-dates {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 8px 16px;
+		margin: 0;
 	}
 
 	.article-meta time {

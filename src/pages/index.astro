@@ -65,8 +65,13 @@ const zhongkaoTopicHref = `${base}/topics/2026-shanghai-zhongkao/`;
 							<div class="post-body">
 								<div class="post-meta">
 									<time datetime={post.data.pubDate.toISOString()}>
-										{formatDate(post.data.pubDate)}
+										发布于 {formatDate(post.data.pubDate)}
 									</time>
+									{post.data.updatedDate && (
+										<time datetime={post.data.updatedDate.toISOString()}>
+											更新于 {formatDate(post.data.updatedDate)}
+										</time>
+									)}
 									{post.data.tags[0] && <span>{post.data.tags[0]}</span>}
 								</div>
 								<h3>{post.data.title}</h3>

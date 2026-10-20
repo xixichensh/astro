@@ -14,4 +14,7 @@ import { defineConfig } from 'astro/config';
 // https://astro.build/config
 export default defineConfig({
   site: 'https://www.cfxixi.com',
+  redirects: {
+    '/blog/2026-07-15-2025年上海中本贯通分数线汇总': '/blog/2026-07-15-2026年上海中本贯通分数线汇总',
+  },
 });
