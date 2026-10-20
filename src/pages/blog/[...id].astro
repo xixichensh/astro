@@ -1329,7 +1329,22 @@ const usesExtraCompactTitle = titleLength > 34;
 		width: min(560px, 100%);
 	}
 
+	.content :global(.archive-gallery) {
+		display: grid;
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+		gap: 1.25rem;
+		margin: 1.8rem 0 2.4rem;
+	}
+
+	.content :global(.archive-gallery figure) {
+		margin: 0;
+	}
+
 	@media (max-width: 640px) {
+		.content :global(.archive-gallery) {
+			grid-template-columns: 1fr;
+		}
+
 		.series-navigation {
 			padding: 1rem;
 		}
