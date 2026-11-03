@@ -19,6 +19,7 @@ const blog = defineCollection({
 			.optional(),
 		relatedPosts: z.array(z.string()).default([]),
 		draft: z.boolean().default(false),
+		wideTables: z.boolean().default(false),
 	}),
 });
 

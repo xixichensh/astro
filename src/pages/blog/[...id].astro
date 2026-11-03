@@ -44,7 +44,8 @@ const visibleRelatedPosts = hasSeriesNavigation
 	? relatedPosts.filter((entry) => entry.data.series?.slug !== post.data.series?.slug)
 	: relatedPosts;
 const seriesHubHref = post.data.series?.hub ? `${base}${post.data.series.hub}` : null;
-const usesWideTables = post.id === '2026-07-15-2026年上海中本贯通分数线汇总';
+const usesWideTables =
+	post.data.wideTables || post.id === '2026-07-15-2026年上海中本贯通分数线汇总';
 const titleLength = Array.from(post.data.title.replace(/\s/g, '')).length;
 const usesCompactTitle = titleLength > 22;
 const usesExtraCompactTitle = titleLength > 34;
@@ -140,7 +141,7 @@ const usesExtraCompactTitle = titleLength > 34;
 
 <style>
 	.article-shell {
-		width: min(920px, calc(100% - 32px));
+		width: min(960px, calc(100% - 32px));
 		margin: 0 auto;
 		padding: 42px 0 96px;
 	}
@@ -663,17 +664,17 @@ const usesExtraCompactTitle = titleLength > 34;
 		-webkit-overflow-scrolling: touch;
 	}
 
-	/* Only data-dense tables need to extend beyond the article column. */
-	.content--wide-tables :global(table:has(tr > :nth-child(7))) {
-		width: min(1200px, calc(100vw - 32px));
+	/* Wide-table articles: let multi-column tables break out of the reading column. */
+	.content--wide-tables :global(table:has(tr > :nth-child(5))) {
+		width: min(1240px, calc(100vw - 24px));
 		max-width: none;
 		margin-right: 0;
 		margin-left: 50%;
 		transform: translateX(-50%);
 	}
 
-	/* Keep short lookup tables compact instead of stretching them to 1200px. */
-	.content--wide-tables :global(table:not(:has(tr > :nth-child(7)))) {
+	/* Keep very short tables from stretching across the viewport. */
+	.content--wide-tables :global(table:not(:has(tr > :nth-child(5)))) {
 		width: fit-content;
 		max-width: 100%;
 		margin-right: auto;
@@ -682,12 +683,17 @@ const usesExtraCompactTitle = titleLength > 34;
 
 	.content :global(th),
 	.content :global(td) {
-		min-width: 7rem;
+		min-width: 6.25rem;
 		border-right: 1px solid var(--line);
 		border-bottom: 1px solid var(--line);
-		padding: 0.65rem 0.75rem;
+		padding: 0.7rem 0.85rem;
 		text-align: left;
 		vertical-align: top;
+	}
+
+	.content--wide-tables :global(td:last-child),
+	.content--wide-tables :global(th:last-child) {
+		min-width: 12rem;
 	}
 
 	.content :global(th) {
